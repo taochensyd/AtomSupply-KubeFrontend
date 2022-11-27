@@ -1,6 +1,6 @@
 import React from "react";
 
-export const container = () => {
+export const Container = () => {
   async function postData(url = "", data = {}) {
     const data = {
       token: "2sGMxTwKeClnILXa3aK2",
