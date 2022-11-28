@@ -1,66 +1,72 @@
 import React, { useState, useEffect } from "react";
 
 const ErrorsLogs = () => {
-  // const [errorsLogs, setErrorsLogs] = useState({});
+  const [errorLogs, setErrorLogs] = useState([]);
+  const errorLogsurl =
+    "https://kube-api-endpoint.atom.com.au/api/v1/home/errorLogs";
 
-  // useEffect(() => {
-  //   fetch("https://kube-api-endpoint.atom.com.au/api/v1/home/logs", {
-  //     mode: "no-cors",
-  //     headers: {
-  //       "Access-Control-Allow-Origin": "*",
-  //     },
-  //   })
-  //     .then((response) => console.log(response))
-  //     .then((data) => (setErrorsLogs = data.json()));
-  // });
+  const fetchErrorLogsData = async () => {
+    try {
+      const response = await fetch(errorLogsurl);
+      const errorLogsjson = await response.json();
+      setErrorLogs(errorLogsjson);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
-  // return (
-  //   <div>
-  //     <p>You clicked {errorsLogs} times</p>
-  //     <button onClick={() => setErrorsLogs(errorsLogs)}>Get Console Logs</button>
-  //   </div>
-  // );
+  const getErrorLogs = () => {
+    fetch("https://kube-api-endpoint.atom.com.au/api/v1/home/errorLogs")
+      .then((data) => {
+        return data.json();
+      })
+      .then((errorLogs) => {
+        return errorLogs;
+      });
+  };
 
-  // const [data, setData] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
+  function updateErrorsLogs() {
+    fetchErrorLogsData();
+  }
 
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `https://kube-api-endpoint.atom.com.au/api/v1/home/errorlogs`,
-  //         {
-  //           mode: "no-cors",
-  //           headers: {
-  //             "Access-Control-Allow-Origin": "*",
-  //           },
-  //         }
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error(
-  //           `This is an HTTP error: The status is ${response.status}`
-  //         );
-  //       }
-  //       let actualData = await response.json();
-  //       console.log(actualData);
-  //       setData(actualData);
-  //       setError(null);
-  //     } catch (err) {
-  //       setError(err.message);
-  //       setData(null);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   getData();
-  // }, []);
+  useEffect(() => {
+    fetchErrorLogsData();
+  }, []);
 
   return (
-    <div className="wrapper">
-      <button onClick={() => console.log("data")}>
-        Get Console Logs
-      </button>
+    <div>
+      <h1>Errors Logs</h1>
+      <button onClick={updateErrorsLogs}>Update</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Record Number</th>
+            <th>Time</th>
+            <th>Date</th>
+            <th>Message</th>
+            <th>Parameter</th>
+          </tr>
+        </thead>
+        <tbody>
+          {errorLogs.map((errorLog) => (
+            <tr key={errorLog.ID}>
+              <td>{errorLog.ID}</td>
+              <td>{errorLog.DateTime}</td>
+              <td>{errorLog.Date}</td>
+              <td>{errorLog.Message}</td>
+              <td>
+                <ul key={errorLog.ID}>
+                  <li>
+                    Environment: {errorLog.Parameter.environment.toUpperCase()}
+                  </li>
+                  <li>Image: {errorLog.Parameter.image}</li>
+                  <li>Tag: {errorLog.Parameter.tag}</li>
+                </ul>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
