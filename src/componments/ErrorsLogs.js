@@ -16,7 +16,7 @@ const ErrorsLogs = () => {
   };
 
   const getErrorLogs = () => {
-    fetch("https://kube-api-endpoint.atom.com.au/api/v1/home/errorLogs")
+    fetch(errorLogsurl)
       .then((data) => {
         return data.json();
       })
@@ -25,10 +25,6 @@ const ErrorsLogs = () => {
       });
   };
 
-  function updateErrorsLogs() {
-    fetchErrorLogsData();
-  }
-
   useEffect(() => {
     fetchErrorLogsData();
   }, []);
@@ -36,7 +32,7 @@ const ErrorsLogs = () => {
   return (
     <div>
       <h1>Errors Logs</h1>
-      <button onClick={updateErrorsLogs}>Update</button>
+      <button onClick={fetchErrorLogsData}>Update</button>
       <table>
         <thead>
           <tr>

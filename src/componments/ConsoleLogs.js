@@ -5,8 +5,19 @@ const ConsoleLogs = () => {
 
   const logsurl = "https://kube-api-endpoint.atom.com.au/api/v1/home/Logs";
 
+  const fetchLogsData = async () => {
+    try {
+      let response = await fetch(logsurl);
+      let logsJson = await response.json();
+      console.log(logsJson)
+      setLogs(logsJson);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   const getLogs = () => {
-    fetch("https://kube-api-endpoint.atom.com.au/api/v1/home/Logs")
+    fetch(logsurl)
       .then((data) => {
         return data.json();
       })
@@ -15,19 +26,7 @@ const ConsoleLogs = () => {
       });
   };
 
-  const fetchLogsData = async () => {
-    try {
-      const response = await fetch(logsurl);
-      const logsJson = await response.json();
-      setLogs(logsJson);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
 
-  function updateLogs() {
-    fetchLogsData();
-  }
 
   useEffect(() => {
     fetchLogsData();
@@ -36,7 +35,7 @@ const ConsoleLogs = () => {
   return (
     <div>
       <h1>Logs</h1>
-      <button onClick={updateLogs}>Update</button>
+      <button onClick={fetchLogsData}>Update</button>
       <table>
         <thead>
           <tr>
@@ -55,13 +54,14 @@ const ConsoleLogs = () => {
               <td>{log.Date}</td>
               <td>{log.Message}</td>
               <td>
+                {/* 
                 <ul key={log.ID}>
                   <li>
-                    Environment: {log.Parameter.environment.toUpperCase()}
+                    Environment: {log.logParameter.environment}
                   </li>
-                  <li>Image: {log.Parameter.image}</li>
-                  <li>Tag: {log.Parameter.tag}</li>
-                </ul>
+                  <li>Image: {log.logParameter.image}</li>
+                  <li>Tag: {log.logParameter.tag}</li>
+                </ul> */}
               </td>
             </tr>
           ))}

@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import ConsoleLogs from "./ConsoleLogs";
 import ErrorsLogs from "./ErrorsLogs";
 import KubeLogs from "./KubeLogs";
+import DeployPod from "./DeployPod";
 
-const HomePage = () => {
+const Homepage = () => {
 
 
   return (
     <div>
-      <KubeLogs></KubeLogs>
+      <DeployPod></DeployPod>
+      {/* <KubeLogs></KubeLogs> */}
       <ConsoleLogs></ConsoleLogs>
-      <ErrorsLogs></ErrorsLogs>
+      <ErrorsLogs></ErrorsLogs> 
     </div>
   );
 };
 
-export default HomePage;
+export default Homepage;

@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 
 const KubeLogs = () => {
-  const [kubeLogs, setKubeLogs] = useState([]);
+  const [kubeDeploymentName, setKubeDeploymentName] = useState([]);
+  const [deploymentsLogs, setDeploymentsLogs] = useState([]);
 
   const logsurl =
-    "https://kube-api-endpoint.atom.com.au/api/v1/k8s/getAllRunningPods";
+    "https://kube-api-endpoint.atom.com.au/api/v1/k8s/getAllDeploymentName";
+  const deploymentlogsurl =
+    "https://kube-api-endpoint.atom.com.au/api/v1/k8s/getDeploymentLogByName";
 
   const fetchKubeLogsData = async () => {
     try {
       const response = await fetch(logsurl);
       // let logsData = await JSON.parse(response)
-      let logsData = await response.json();
-      let logsjson = JSON.parse(logsData);
-      setKubeLogs(logsjson);
-      console.log(logsjson)
-      console.log(typeof logsjson)
+      let logsjson = await response.json();
+      console.log(logsjson.items);
+      setKubeDeploymentName(logsjson.items);
     } catch (error) {
       console.log("error", error);
     }
@@ -23,6 +24,39 @@ const KubeLogs = () => {
   async function updateKubeLogs() {
     await fetchKubeLogsData();
   }
+
+  // const fetchDeploymentsLogsData = async (deploymentName) => {
+  //   try {
+  //     const response = await fetch(deploymentlogsurl, {
+  //       method: 'POST',
+  //       deploymentName: deploymentName,
+  //     });
+  //     // let logsData = await JSON.parse(response)
+  //     let logsjson = await response.json();
+  //     setDeploymentsLogs(logsjson);
+  //     return <p>{deploymentsLogs}</p>
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   }
+  // };
+
+  const fetchDeploymentsLogsData = async (name) => {
+    try {
+      let data = {
+        deploymentName: name,
+      }
+      const response = await fetch(deploymentlogsurl, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      console.log(`Name: ${name}`);
+      let logsjson = await response.text();
+      setDeploymentsLogs(logsjson);
+      console.log(`${logsjson}`);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   useEffect(() => {
     fetchKubeLogsData();
@@ -36,17 +70,23 @@ const KubeLogs = () => {
         <thead>
           <tr>
             <th>Deployment/Service</th>
-            <th>Pod name</th>
+            <th>Logs</th>
           </tr>
         </thead>
 
         <tbody>
-          {kubeLogs.map((kubeLog) => (
-              <tr key={kubeLog.metadata.name}>
-                <td>{kubeLog.metadata.labels.app}</td>
-                <td>{kubeLog.metadata.name}</td>
-              </tr>
-            ))}
+          {kubeDeploymentName.map((name) => (
+            <tr key={name.metadata.name}>
+              <td>{name.metadata.name}</td>
+              <td>
+                <button
+                  onClick={() => fetchDeploymentsLogsData(name.metadata.name)}
+                >
+                  Get Log
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
