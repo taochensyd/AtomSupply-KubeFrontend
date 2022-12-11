@@ -53,7 +53,7 @@ const ErrorsLogs = () => {
               <td>
                 <ul key={errorLog.ID}>
                   <li>
-                    Environment: {errorLog.Parameter.environment.toUpperCase()}
+                    Environment: {errorLog.Parameter.environment}
                   </li>
                   <li>Image: {errorLog.Parameter.image}</li>
                   <li>Tag: {errorLog.Parameter.tag}</li>
